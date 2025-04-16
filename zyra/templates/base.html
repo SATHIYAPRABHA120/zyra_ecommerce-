@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %} 
+    <meta charset="UTF-8">
+    <title>{% block title %}Zyra♥{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <header>
+        <nav>
+            <ul>
+                <!-- If you updated the URL name to 'category_page' in urls.py, use this -->
+                <li><a href="{% url 'category_page' %}">Categories</a></li>
+                
+                {% if user.is_authenticated %}
+                    <!-- Cart will only be visible in the categories page -->
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>

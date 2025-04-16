@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - MyShop</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 360px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .error {
+            color: red;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #fdfbfb, #ebedee);
+            margin: 0;
+            padding: 0;
+        }
+    
+        .container {
+            width: 360px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+    
+        .container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+    
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 26px;
+            color: #2c3e50;
+        }
+    
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+    
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+    
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+    
+        button:hover {
+            background: linear-gradient(to right, #43a047, #388e3c);
+        }
+    
+        .error {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+    
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 15px;
+            color: #555;
+        }
+    
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+    
+        .footer a:hover {
+            color: #388e3c;
+            text-decoration: underline;
+        }
+    </style>
+    
+
+</head>
+<body>
+
+<div class="container">
+    <h2>Login to Zyra</h2>
+
+    {% if messages %}
+        <div class="error">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <input type="email" name="username" placeholder="Enter your email" required>
+        <input type="password" name="password" placeholder="Enter your password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <div class="footer">
+        Don't have an account? <a href="{% url 'send_otp' %}">Sign up</a>
+    </div>
+</div>
+
+</body>
+</html>

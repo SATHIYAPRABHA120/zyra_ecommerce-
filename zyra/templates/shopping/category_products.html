@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}  <!-- Ensure this is included -->
+{% block title %}{{ category_name }} Products{% endblock %}
+
+{% block content %}
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  body {
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .page-title {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .product-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 260px;
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+
+  .product-card:hover {
+    transform: scale(1.02);
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .product-name {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .like-btn {
+    background-color: #ff4d4d;
+    color: white;
+  }
+
+  .cart-btn {
+    background-color: #1e90ff;
+    color: white;
+  }
+
+  .details-btn {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 5px;
+    text-decoration: underline;
+  }
+
+  .product-desc {
+    display: none;
+    font-size: 14px;
+    margin-top: 10px;
+    color: #333;
+  }
+
+  .back-btn {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .back-btn a {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    background-color: #444;
+    color: white;
+    transition: 0.2s;
+  }
+
+  .back-btn a:hover {
+    background-color: #222;
+  }
+</style>
+
+<h2 class="page-title">{{ category_name }} Products</h2>
+
+<div class="product-grid">
+  {% for product in products %}
+    <div class="product-card">
+      {% if product.product_image %}
+        <img src="{{ product.product_image.url }}" alt="{{ product.name }}">
+      {% else %}
+        <img src="{% static 'images/default.jpg' %}" alt="No Image Available">
+      {% endif %}
+
+      <h3 class="product-name">{{ product.name }}</h3>
+
+      {% if user.is_authenticated %}
+      <form method="POST" action="{% url 'add_to_cart' %}">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <div class="btn-group">
+            <button class="btn like-btn" onclick="alert('Liked!')">❤ Like</button>
+            <button class="btn cart-btn" type="submit">🛒 Add to Cart</button>
+        </div>
+    </form>
+    
+    {% if not user.is_authenticated %}
+        <p><a href="{% url 'login' %}">Login to add to wishlist</a></p>
+    {% else %}
+        <a href="{% url 'add_to_wishlist' product.id %}" class="add-to-wishlist-btn">Add to Wishlist</a>
+    {% endif %}
+    
+      {% else %}
+        <p>Please log in to add items to the cart.</p>
+      {% endif %}
+
+      <button class="details-btn" onclick="toggleDesc(this)">🔍 View Product Details</button>
+      <p class="product-desc">{{ product.description }}</p>
+    </div>
+  {% empty %}
+    <p>No products found in this category.</p>
+  {% endfor %}
+</div>
+
+<div class="back-btn">
+  <a href="{% url 'category_page' %}">← Back to Categories</a>
+</div>
+
+<script>
+  function toggleDesc(button) {
+    const desc = button.nextElementSibling;
+    desc.style.display = desc.style.display === 'block' ? 'none' : 'block';
+    button.textContent = desc.style.display === 'block' ? '🔽 Hide Details' : '🔍 View Product Details';
+  }
+</script>
+{% endblock %}

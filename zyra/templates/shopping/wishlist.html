@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wishlist</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f7f7f7;
+    }
+    header {
+      background-color: #1e1e1e;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .wishlist {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 30px;
+    }
+    .item-card {
+      width: 220px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    .item-card:hover {
+      transform: scale(1.03);
+    }
+    .item-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .item-card h4 {
+      margin: 15px 0 5px;
+    }
+    .item-card p {
+      color: #555;
+      font-size: 14px;
+      padding: 0 10px 15px;
+    }
+    .wishlist-actions {
+      margin: 10px 0;
+    }
+    .btn-remove, .btn-add-to-cart {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 5px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+      color: white;
+    }
+    .btn-remove {
+      background-color: #d9534f;
+    }
+    
+  </style>
+<div style="padding: 20px;">
+  <a href="{% url 'category_page' %}" class="back-btn">← Back</a>
+</div>
+
+<style>
+  .back-btn {
+    display: inline-block;
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .back-btn:hover {
+    background-color: #5a6268;
+  }
+</style>
+
+<body>
+  <header>💖 My Wishlist</header>
+
+
+<div class="wishlist">
+  {% for item in wishlist_items %}
+    <div class="item-card">
+      <!-- Make the image clickable and redirect to the product detail page -->
+      <a href="{% url 'product_detail' item.product.id %}">
+        <img src="{{ item.product.product_image.url }}" alt="{{ item.product.name }}" class="wishlist-item-image">
+      </a>
+
+      <h4>{{ item.product.name }}</h4>
+      <p>{{ item.product.description|truncatewords:12 }}</p>
+
+      <!-- Buttons to add to cart or remove from wishlist -->
+      <div class="wishlist-actions">
+        <a href="{% url 'remove_from_wishlist' item.product.id %}" class="btn-remove">
+      </div>
+    </div>
+  {% empty %}
+    <p style="text-align:center;">You haven’t added any items to your wishlist yet.</p>
+  {% endfor %}
+</div>  
+</body>
+</html>
