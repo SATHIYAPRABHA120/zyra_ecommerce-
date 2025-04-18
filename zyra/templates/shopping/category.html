@@ -1,0 +1,193 @@
+<!-- category.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyCart - Shop by Category</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f7f7;
+    }
+
+    /* 🔥 Navbar styles */
+    .topnav {
+      background-color: #111;
+      overflow: hidden;
+      padding: 10px 0;
+    }
+
+    .topnav a {
+      float: left;
+      display: block;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .topnav a:hover {
+      background-color: #575757;
+      color: white;
+    }
+
+    header {
+      background-color: #1e1e1e;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .search-bar {
+      text-align: center;
+      margin: 30px 0 10px;
+    }
+
+    .search-bar input {
+      padding: 10px 15px;
+      width: 300px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .category-card-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .category-card {
+      width: 220px;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .category-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .category-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    .category-card h3 {
+      margin: 15px 0 10px;
+    }
+
+    .category-card p {
+      padding: 0 10px 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .no-results {
+      text-align: center;
+      color: #999;
+      font-size: 18px;
+      margin-top: 30px;
+      display: none;
+    }
+
+    footer {
+      background-color: #1e1e1e;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🧭 Navigation bar -->
+  <div class="topnav">
+    <a href="#">Zyra♥</a>
+    <a href="{% url 'profile' %}">MyProfile</a>
+    <a href="{% url 'view_wishlist' %}">My Wishlist</a>
+    <a href="{% url 'view_cart' %}">My Cart</a>
+    <a href="{% url 'order_list' %}">My Orders</a> 
+    <a href="{% url 'logout' %}">Logout</a>
+  </div>
+
+  <header>
+    🛒 Categories
+  </header>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search categories...">
+  </div>
+
+  <div class="categories" id="categoryList">
+    {% for item in categories %}
+      <a href="{% url 'category_products' item.name %}" class="category-card-link" data-name="{{ item.name|lower }}">
+        <div class="category-card">
+          {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="category-img">
+          {% else %}
+            <img src="{% static 'images/default.jpg' %}" alt="No Image" class="category-img">
+          {% endif %}
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+        </div>
+      </a>
+    {% empty %}
+      <p>No categories found.</p>
+    {% endfor %}
+  </div>
+
+  <div class="no-results" id="noResults">No matching categories found.</div>
+
+  <footer>
+   ZYRA
+  </footer>
+
+  <script>
+    const searchInput = document.getElementById("searchInput");
+    const cards = document.querySelectorAll(".category-card-link");
+    const noResults = document.getElementById("noResults");
+
+    searchInput.addEventListener("input", () => {
+      const search = searchInput.value.toLowerCase().trim();
+      let found = false;
+
+      cards.forEach(card => {
+        const name = card.getAttribute("data-name");
+        if (name.includes(search)) {
+          card.style.display = "";
+          found = true;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      noResults.style.display = found ? "none" : "block";
+    });
+  </script>
+
+</body>
+</html>

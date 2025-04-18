@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+<h2>Your Cart</h2>
+
+{% if cart_items %}
+    <div class="cart-container">
+        {% for item in cart_items %}
+            <div class="cart-item">
+                <!-- DO NOT TOUCH IMAGE STYLE -->
+                <img src="{{ item.product.product_image.url }}" alt="{{ item.product.name }}" class="cart-item-img" style="width: 300px; height: 300px; object-fit: cover; border-radius: 8px;" />
+                <div class="cart-item-details">
+                    <h3>{{ item.product.name }}</h3>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p>Price: ₹{{ item.product.selling_price|floatformat:2 }}</p>
+                    <p>Total: ₹{{ item.total_price|floatformat:2 }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="cart-summary">
+        <p><strong>Total: ₹{{ total|floatformat:2 }}</strong></p>
+        <form method="post" action="{% url 'checkout' %}">
+            {% csrf_token %}
+            <button type="submit" style="background-color: #28a745; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">Proceed to Checkout</button>
+        </form>
+    </div>
+{% else %}
+    <p>Your cart is empty. Add some products to your cart to proceed with the checkout!</p>
+{% endif %}
+{% endblock %}
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(to right, #fdfbfb, #ebedee);
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 32px;
+        margin: 30px 0 10px;
+        color: #2c3e50;
+        letter-spacing: 1px;
+    }
+
+    p {
+        text-align: center;
+        font-size: 18px;
+        color: #666;
+    }
+
+    .cart-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+        align-items: center;
+    }
+
+    .cart-item {
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 15px;
+        width: 100%;
+        max-width: 700px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .cart-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .cart-item-img {
+        width: 150px !important;
+        height: 150px !important;
+        object-fit: cover !important;
+        border-radius: 8px !important;
+        border: 2px solid #eee;
+        margin-right: 20px;
+        flex-shrink: 0;
+    }
+
+    .cart-item-details {
+        flex: 1;
+        text-align: left;
+    }
+
+    .cart-item-details h3 {
+        font-size: 20px;
+        margin-bottom: 8px;
+        color: #2c3e50;
+    }
+
+    .cart-item-details p {
+        font-size: 15px;
+        margin: 4px 0;
+        color: #555;
+    }
+
+    .cart-summary {
+        margin-top: 30px;
+        text-align: right;
+        font-size: 18px;
+        font-weight: 600;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .checkout-btn {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: block;
+        margin: 20px auto 0;
+    }
+
+    .checkout-btn:hover {
+        background-color: #218838;
+        transform: scale(1.05);
+    }
+
+    .checkout-btn:active {
+        background-color: #1e7e34;
+        transform: scale(0.98);
+    }
+</style>
+{% endblock %}

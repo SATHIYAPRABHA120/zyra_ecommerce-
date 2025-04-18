@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category_name }} Products{% endblock %}
+
+{% block content %}
+<style>
+  /* ========== Container & Grid ========== */
+  .page-title {
+    text-align: center;
+    font-size: 28px;
+    margin: 20px 0;
+  }
+  .product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 10px;
+  }
+
+  /* ========== Card Styles ========== */
+  .product-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 260px;
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .product-card:hover { transform: scale(1.02); }
+  .product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .product-name {
+    font-size: 18px;
+    margin: 10px 0;
+  }
+
+  /* ========== Buttons ========== */
+  .btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .cart-btn {
+    background-color: #1e90ff;
+    color: #fff;
+  }
+  .like-btn {
+    background-color: #ff4d4d;
+    color: #fff;
+  }
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+  .details-btn {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: underline;
+    margin-top: 8px;
+  }
+
+  /* ========== Description Toggle ========== */
+  .product-desc {
+    display: none;
+    font-size: 14px;
+    color: #333;
+    margin-top: 10px;
+    text-align: left;
+  }
+
+  /* ========== Back Link ========== */
+  .back-btn {
+    text-align: center;
+    margin: 30px 0;
+  }
+  .back-btn a {
+    text-decoration: none;
+    padding: 10px 20px;
+    background: #444;
+    color: #fff;
+    border-radius: 6px;
+    transition: background 0.2s;
+  }
+  .back-btn a:hover {
+    background: #222;
+  }
+</style>
+
+<h2 class="page-title">{{ category_name }} Products</h2>
+
+<div class="product-grid">
+  {% for product in products %}
+    <div class="product-card">
+      {# — Image with default fallback — #}
+      {% if product.product_image %}
+        <img src="{{ product.product_image.url }}" alt="{{ product.name }}">
+      {% else %}
+        <img src="{% static 'images/default.jpg' %}" alt="No Image">
+      {% endif %}
+
+      <h3 class="product-name">{{ product.name }}</h3>
+
+      {# — Add to Cart (POST) or login prompt — #}
+      {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'add_to_cart' %}">
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <button type="submit" class="btn cart-btn">🛒 Add to Cart</button>
+        </form>
+      {% else %}
+        <p>
+          <a href="{% url 'login' %}?next={{ request.path }}">
+            🔒 Login to add to cart
+          </a>
+        </p>
+      {% endif %}
+
+      {# — Wishlist (AJAX) or login prompt — #}
+      <div class="btn-group">
+        {% if user.is_authenticated %}
+          <button
+            class="btn like-btn"
+            data-url="{% url 'add_to_wishlist' product.id %}"
+            data-name="{{ product.name }}"
+            onclick="toggleWishlist(this)"
+          >❤ Like</button>
+        {% else %}
+          <a href="{% url 'login' %}?next={{ request.path }}" class="btn like-btn">
+            🔒 Wishlist
+          </a>
+        {% endif %}
+      </div>
+
+      {# — Details toggle — #}
+      <button class="details-btn" onclick="toggleDesc(this)">
+        🔍 View Details
+      </button>
+      <p class="product-desc">{{ product.description }}</p>
+    </div>
+  {% empty %}
+    <p>No products found in this category.</p>
+  {% endfor %}
+</div>
+
+<div class="back-btn">
+  <a href="{% url 'category_page' %}">← Back to Categories</a>
+</div>
+
+<script>
+  function toggleWishlist(button) {
+    const url  = button.dataset.url;
+    const name = button.dataset.name;
+    fetch(url, {
+      method: 'GET',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      credentials: 'same-origin'
+    })
+    .then(r => r.json())
+    .then(data => {
+      const msg = data.wishlist_status === 'added'
+        ? `${name} added to wishlist!`
+        : `${name} removed from wishlist!`;
+      alert(msg);
+      button.textContent = data.wishlist_status === 'added'
+        ? '💔 Remove'
+        : '❤ Like';
+    })
+    .catch(err => console.error('Wishlist error:', err));
+  }
+
+  function toggleDesc(btn) {
+    const card = btn.closest('.product-card');
+    const desc = card.querySelector('.product-desc');
+    if (desc.style.display === 'block') {
+      desc.style.display = 'none';
+      btn.textContent = '🔍 View Details';
+    } else {
+      desc.style.display = 'block';
+      btn.textContent = '🔍 Hide Details';
+    }
+  }
+</script>
+{% endblock %}

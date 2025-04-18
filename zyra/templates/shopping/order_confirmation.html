@@ -1,0 +1,95 @@
+<!-- {% extends 'base.html' %}
+{% block content %}
+<h2>Order Confirmation</h2>
+<p>Your payment was successful. Here's your order summary:</p>
+
+<ul>
+    {% for item in cart_items %}
+        <li>{{ item.product.name }} x{{ item.quantity }} — ₹{{ item.total_price }}</li>
+    {% endfor %}
+</ul>
+
+<p><strong>Total Paid: ₹{{ total_price }}</strong></p>
+<a href="/">Back to Home</a>
+{% endblock %} -->
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .bill-container {
+        max-width: 500px;
+        margin: 40px auto;
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 25px 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .bill-container h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        border-bottom: 2px dashed #ccc;
+        padding-bottom: 10px;
+    }
+
+    .bill-container p {
+        text-align: center;
+        font-size: 16px;
+        color: #555;
+    }
+
+    .bill-list {
+        margin-top: 20px;
+        padding: 0;
+        list-style-type: none;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+
+    .bill-list li {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px dashed #eee;
+        font-size: 15px;
+    }
+
+    .total {
+        text-align: right;
+        font-weight: bold;
+        font-size: 17px;
+        margin-top: 15px;
+    }
+
+    .home-link {
+        display: block;
+        text-align: center;
+        margin-top: 25px;
+        text-decoration: none;
+        color: #4CAF50;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .home-link:hover {
+        color: #388e3c;
+    }
+</style>
+
+<div class="bill-container">
+    <h2>Order Confirmation</h2>
+    <p>Your payment was successful. Here's your order summary:</p>
+
+    <ul class="bill-list">
+        {% for item in cart_items %}
+            <li>{{ item.product.name }} x{{ item.quantity }} <span>₹{{ item.total_price }}</span></li>
+        {% endfor %}
+    </ul>
+
+    <p class="total">Total Paid: ₹{{ total_price }}</p>
+    <a href="/" class="home-link">← Back to Home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Orders{% endblock %}
+
+{% block content %}
+<h2>Your Orders</h2>
+
+{% if orders %}
+    <div class="order-list">
+        {% for order in orders %}
+            <div class="order-box">
+                <!-- Product Image -->
+                {% if order.order_items %}
+                    <img src="{{ order.order_items.first.product.product_image.url }}" alt="{{ order.order_items.first.product.name }}" class="order-item-img">
+                {% endif %}
+                
+                <!-- Order Information -->
+                <h3>Order </h3>
+                <p><strong>Total: ₹{{ order.total_price|floatformat:2 }}</strong></p>
+                <p>Status: {{ order.status }}</p>
+                <a href="{% url 'order_summary' order.id %}" class="view-order-link">View Order Details</a>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>You have no orders yet. Start shopping!</p>
+{% endif %}
+{% endblock %}
+
+{% block css %}
+<style>
+    /* Main styling for the Order List */
+    .order-list {
+        display: flex;
+        flex-wrap: wrap; /* Allows items to wrap onto the next line */
+        gap: 20px; /* Gap between order boxes */
+        margin-top: 20px;
+        justify-content: center; /* Centers the boxes */
+    }
+
+    /* Each individual order box */
+    .order-box {
+        background-color: #ffffff; /* White background for the box */
+        border: 1px solid #ddd; /* Light gray border around the box */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for the box */
+        padding: 20px;
+        width: 300px; /* Fixed width for each box */
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for scale and shadow */
+        margin-bottom: 20px; /* Adds space between boxes */
+        position: relative;
+    }
+
+    .order-box:hover {
+        transform: scale(1.05); /* Slight zoom effect on hover */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+    }
+
+    /* Product Image */
+    .order-item-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    /* Heading for each order */
+    .order-box h3 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    /* Price and status styling */
+    .order-box p {
+        font-size: 1.2rem;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    /* Styling the "View Order Details" link */
+    .view-order-link {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition for background and scale */
+    }
+
+    .view-order-link:hover {
+        background-color: #45a049; /* Darker green on hover */
+        transform: scale(1.1); /* Slight zoom effect on the button */
+    }
+
+    /* Empty state (no orders) */
+    .order-list p {
+        text-align: center;
+        font-size: 1.5rem;
+        color: #888;
+    }
+
+    /* General body padding and font settings */
+    body {
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7; /* Light background for the whole page */
+    }
+
+    /* Styling for when there are no orders */
+    .order-list p {
+        font-size: 1.2rem;
+        color: #888;
+        text-align: center;
+        margin-top: 50px;
+    }
+</style>
+{% endblock %}
